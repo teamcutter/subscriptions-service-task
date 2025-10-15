@@ -1,0 +1,9 @@
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: 'subscriptions_service'
+    static_configs:
+      - targets: ['subscriptions-service:2112']
+    scrape_interval: 5s
+    scrape_timeout: 3s
