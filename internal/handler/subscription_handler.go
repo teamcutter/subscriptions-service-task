@@ -11,11 +11,11 @@ import (
 )
 
 type Handler struct {
-	repository *repo.SubscriptionRepo
+	repository repo.Repo
 	logger *slog.Logger
 }
 
-func NewHandler(repository *repo.SubscriptionRepo, logger *slog.Logger) *Handler {
+func NewHandler(repository repo.Repo, logger *slog.Logger) *Handler {
 	return &Handler{
 		repository: repository,
 		logger: logger,

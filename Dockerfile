@@ -8,7 +8,7 @@ RUN go mod download
 
 COPY . .
 
-COPY .env .env 
+COPY .env .env
 
 RUN go install github.com/swaggo/swag/cmd/swag@v1.16.3
 RUN go get -u github.com/swaggo/swag

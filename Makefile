@@ -5,6 +5,9 @@ init:
 	swag init -g ./cmd/main.go
 	go mod tidy
 
+test:
+	go test ./internal/handler ./internal/repo -v
+
 run-build:
 	docker-compose up --build
 

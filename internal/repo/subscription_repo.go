@@ -7,6 +7,13 @@ import (
 	"github.com/teamcutter/subscriptions-service-task/internal/utils"
 )
 
+type Repo interface{
+	Create(*model.Subscription) error
+	GetAll() ([]model.Subscription, error)
+	Delete(int) error
+	TotalCost(string, string, string, string) (int, error)
+} 
+
 type SubscriptionRepo struct {
 	db *sql.DB
 }
@@ -83,7 +90,7 @@ func (r *SubscriptionRepo) Delete(id int) error {
 	return err
 }
 
-func (r *SubscriptionRepo) TotalCost(userID, serviceName string, start, end string) (int, error) {
+func (r *SubscriptionRepo) TotalCost(userID, serviceName, start, end string) (int, error) {
 	query := 
 	`
 	SELECT
