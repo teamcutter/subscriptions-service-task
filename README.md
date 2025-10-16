@@ -4,7 +4,7 @@ Subscriptions management service
 
 ## Project structure
 
-- `cmd/` — where main.go stored
+- `cmd/` — where main.go is located
 - `internal/` — private packages
 - `pkg/database/` — connection PostgreSQL
 - `Dockerfile` — docker container
@@ -24,7 +24,10 @@ cd subscriptions-service-task
 ### 2. Create .env
 Idealy you have to create your own .env file, but I have pushed them for you JUST for simplicity purposes. It is bad to push .env files, I know :D
 
-### 3. Start project
+### 3. Reminder
+Do not forget to run Docker on your machine and install Go 
+
+### 4. Start project
 Simply do
 ```bash
 make up-build
