@@ -8,8 +8,8 @@ init:
 test:
 	go test ./internal/handler ./internal/repo -v
 
-run-build:
+up-build: init test
 	docker-compose up --build
 
-run:
+up:
 	docker-compose up
