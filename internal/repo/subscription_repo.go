@@ -23,7 +23,8 @@ func NewSubscriptionRepo(db *sql.DB) *SubscriptionRepo {
 }
 
 func (r *SubscriptionRepo) Create(s *model.Subscription) error {
-	query := `
+	query := 
+	`
 		INSERT INTO subscriptions (service_name, price, user_id, start_date, end_date)
 		VALUES ($1, $2, $3, $4, $5)
 	`
@@ -96,8 +97,8 @@ func (r *SubscriptionRepo) TotalCost(userID, serviceName, start, end string) (in
 	SELECT
 	SUM(
     	price * (
-        	DATE_PART('year', AGE(COALESCE(end_date, $4), GREATEST(start_date, $3))) * 12 +
-        	DATE_PART('month', AGE(COALESCE(end_date, $4), GREATEST(start_date, $3))) + 1
+        	DATE_PART('year', AGE(LEAST(COALESCE(end_date, $4), $4), GREATEST(start_date, $3))) * 12 +
+        	DATE_PART('month', AGE(LEAST(COALESCE(end_date, $4), $4), GREATEST(start_date, $3))) + 1
     	)
 	) as total_price
 	FROM subscriptions
