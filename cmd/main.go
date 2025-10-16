@@ -95,7 +95,12 @@ func main() {
 	
 	go func() {
 		http.Handle("/metrics", promhttp.Handler())
-		http.ListenAndServe(":2112", nil)
+		err := http.ListenAndServe(":2112", nil)
+		if err != nil {
+			logger.Error("metrics failed", "error", err)
+			return
+		}
+		logger.Info("metrics run on port 2112")
 	}()
 
 	port := os.Getenv("APP_PORT")

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"log/slog"
 	"net/http"
 	"strconv"
@@ -34,9 +35,11 @@ func NewHandler(repository repo.Repo, logger *slog.Logger) *Handler {
 func (h *Handler) Create(c echo.Context) error {
 	var sub model.Subscription
 	if err := c.Bind(&sub); err != nil {
+		h.logger.Error("JSON binding error", "error", err)
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 	if err := h.repository.Create(&sub); err != nil {
+		h.logger.Error("create error", "error", err)
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 
@@ -58,6 +61,7 @@ func (h *Handler) Create(c echo.Context) error {
 func (h *Handler) GetAll(c echo.Context) error {
 	subs, err := h.repository.GetAll()
 	if err != nil {
+		h.logger.Error("get all error", "error", err)
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 	return c.JSON(http.StatusOK, subs)
@@ -70,14 +74,20 @@ func (h *Handler) GetAll(c echo.Context) error {
 // @Success 204
 // @Router /subscriptions/{id} [delete]
 func (h *Handler) Delete(c echo.Context) error {
-	idStr := c.Param("id")
-	id, _ := strconv.Atoi(idStr)
-	if err := h.repository.Delete(id); err != nil {
+	subscriptionId := c.Param("id")
+	if subscriptionId == "" {
+		err := errors.New("missing required params")
+		h.logger.Error("delete error", "error", err)
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 
-	h.logger.Info("subscription deleted",
-		"service_id", id)
+	id, _ := strconv.Atoi(subscriptionId)
+	if err := h.repository.Delete(id); err != nil {
+		h.logger.Error("delete error", "error", err)
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+
+	h.logger.Info("subscription deleted", "service_id", id)
 	return c.NoContent(http.StatusNoContent)
 }
 
@@ -97,8 +107,15 @@ func (h *Handler) TotalCost(c echo.Context) error {
 	start := c.QueryParam("start")
 	end := c.QueryParam("end")
 
+	if userID == "" || start == "" || end == "" {
+		err := errors.New("missing required params")
+		h.logger.Error("total cost error", "error", err)
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+
 	total, err := h.repository.TotalCost(userID, service, start, end)
 	if err != nil {
+		h.logger.Error("total cost error", "error", err)
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 
